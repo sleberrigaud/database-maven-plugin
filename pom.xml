@@ -9,6 +9,13 @@
 
     <name>Maven Database Plugin</name>
 
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
     <scm>
         <connection>scm:git:git://github.com/sleberrigaud/Maven-Database-Plugin.git</connection>
         <developerConnection>scm:git:git://github.com/sleberrigaud/Maven-Database-Plugin.git</developerConnection>
