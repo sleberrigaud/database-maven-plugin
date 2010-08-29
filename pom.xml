@@ -8,6 +8,8 @@
     <packaging>maven-plugin</packaging>
 
     <name>Maven Database Plugin</name>
+    <description>A maven plugin to create and drop databases and their associated users.</description>
+    <url>http://wiki.github.com/sleberrigaud/database-maven-plugin/</url>
 
     <licenses>
         <license>
@@ -21,6 +23,16 @@
         <developerConnection>scm:git:git://github.com/sleberrigaud/database-maven-plugin.git</developerConnection>
         <url>http://github.com/sleberrigaud/database-maven-plugin</url>
     </scm>
+
+    <developers>
+        <developer>
+            <id>sleberrigaud</id>
+            <name>Samuel Le Berrigaud</name>
+            <email>sam(at)leberrigaud(dot)org</email>
+            <url>http://sam.leberrigaud.org</url>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
