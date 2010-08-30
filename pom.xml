@@ -71,16 +71,4 @@
         <gmaven.version>1.3</gmaven.version>
         <gmaven.runtime>1.5</gmaven.runtime>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>leberrigaud-repository</id>
-            <url>svn:https://leberrigaud-repository.googlecode.com/svn/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>leberrigaud-repository-snapshots</id>
-            <url>svn:https://leberrigaud-repository.googlecode.com/svn/snapshots</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
