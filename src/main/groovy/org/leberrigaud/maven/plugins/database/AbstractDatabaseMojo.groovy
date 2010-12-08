@@ -2,6 +2,7 @@ package org.leberrigaud.maven.plugins.database
 
 import groovy.sql.Sql
 import org.codehaus.gmaven.mojo.GroovyMojo
+import org.apache.maven.plugin.MojoFailureException
 
 /**
  *
@@ -10,14 +11,28 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
 {
     static final DB = [
             'mysql': new MySql(),
-            'postgres': new Postgres()
+            'postgres': new Postgres(),
+            'oracle': new Oracle()
     ]
 
     /**
      * The type of database to connect to
-     * @parameter default-value="MYSQL"
+     * @parameter default-value="mysql"
      */
     String database
+
+    /**
+     * The host the database server lives on
+     * @parameter expression="${db.host}" default-value="localhost"
+     */
+    String host;
+
+    /**
+     * the port on which to access the database via JDBC.
+     * It has no default value set here, if unassigned it will default to the default port for each DB.
+     * @parameter expression="${db.port}"
+     */
+    String port;
 
     /**
      * The name of the database to create
@@ -48,14 +63,14 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     String rootPassword
 
     /**
-     * @parameter default-value="false"
+     * @parameter expression="${db.skip}" default-value="false"
      */
     boolean skip
 
     void drop()
     {
-        final def db = DB[database]
-        final Sql sql = Sql.newInstance(db.url, rootUsername, rootPassword, db.driver)
+        final def db = db()
+        final Sql sql = newSql(db)
 
         executeSql(sql, db.dropUser(username), true)
         executeSql(sql, db.dropDb(name), true)
@@ -63,16 +78,35 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
 
     void create()
     {
-        final def db = DB[database]
-        final Sql sql = Sql.newInstance(db.url, rootUsername, rootPassword, db.driver)
+        final def db = db()
+        final Sql sql = newSql(db)
         executeSql(sql, db.createUser(username, password))
         executeSql(sql, db.createDb(name))
         executeSql(sql, db.grantPrivileges(name, username))
     }
 
+    def db()
+    {
+        def db = DB[database]
+        if (!db)
+        {
+            throw new MojoFailureException("Could not find database '$database'")
+        }
+        return db
+    }
+
+    def newSql(def db)
+    {
+        final Properties props = new Properties();
+        props['user'] = rootUsername
+        props['password'] = rootPassword
+        props['internal_logon'] = 'sysdba' // for Oracle
+        return Sql.newInstance(db.url(host, port), props, db.driver)
+    }
+
     private void executeSql(Sql runner, String sql)
     {
-        executeSql runner, sql, false
+        if (sql) executeSql runner, sql, false
     }
 
     private void executeSql(Sql runner, String sql, boolean ignoreException)

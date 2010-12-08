@@ -5,8 +5,10 @@ package org.leberrigaud.maven.plugins.database
  */
 final class MySql
 {
+    final static String PORT = '3306'
     final String driver = "com.mysql.jdbc.Driver"
-    final String url = "jdbc:mysql://localhost:3306/mysql?autoReconnect=true"
+
+    final def url(def host = 'localhost', def port = PORT) { "jdbc:mysql://$host:${port ? port : PORT}/mysql?autoReconnect=true" }
 
     final def createUser = {username, password -> "create user '$username'@'localhost' identified by '$password'" }
     final def createDb = {name -> "create database $name" }
