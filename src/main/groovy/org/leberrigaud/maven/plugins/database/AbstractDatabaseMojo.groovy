@@ -72,8 +72,8 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
         final def db = db()
         final Sql sql = newSql(db)
 
-        executeSql(sql, db.dropUser(username), true)
         executeSql(sql, db.dropDb(name), true)
+        executeSql(sql, db.dropUser(username), true)
     }
 
     void create()
@@ -119,6 +119,7 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
         catch (Exception e)
         {
             if (!ignoreException) throw e
+            else log.info("Error running '$sql': $e.message")
         }
     }
 
