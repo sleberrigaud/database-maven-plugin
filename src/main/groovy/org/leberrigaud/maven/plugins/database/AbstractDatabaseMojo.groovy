@@ -95,11 +95,11 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
         return db
     }
 
-    def newSql(def db)
+    Sql newSql(def db)
     {
         final Properties props = new Properties();
         props['user'] = rootUsername
-        props['password'] = rootPassword
+        props['password'] = rootPassword ? rootPassword : ""
         props['internal_logon'] = 'sysdba' // for Oracle
         return Sql.newInstance(db.url(host, port), props, db.driver)
     }
