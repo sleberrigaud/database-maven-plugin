@@ -67,6 +67,12 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
      */
     boolean skip
 
+    /**
+     * Whether or not to show passwords when running the plugin in DEBUG mode.
+     * @parameter expression="${db.showPasswords}" default-value="false"
+     */
+    boolean showPasswords
+
     void drop()
     {
         final def db = db()
@@ -101,7 +107,14 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
         props['user'] = rootUsername
         props['password'] = rootPassword ? rootPassword : ""
         props['internal_logon'] = 'sysdba' // for Oracle
-        return Sql.newInstance(db.url(host, port), props, db.driver)
+
+        final url = db.url(host, port)
+
+        if (log.debugEnabled)
+        {
+            log.debug "Accessing database at '$url' with username '$rootUsername' ${showPasswords ? "and password $rootPassword":''}"
+        }
+        return Sql.newInstance(url, props, db.driver)
     }
 
     private void executeSql(Sql runner, String sql)
