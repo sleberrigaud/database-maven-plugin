@@ -53,6 +53,12 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     String password
 
     /**
+     * Additional properties one might want to pass when connecting to the database
+     * @parameter
+     */
+    Map<String, String> properties = [:]
+
+    /**
      * @parameter
      */
     String rootUsername
@@ -104,15 +110,16 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     Sql newSql(def db)
     {
         final Properties props = new Properties();
+        props.putAll(properties)
         props['user'] = rootUsername
         props['password'] = rootPassword ? rootPassword : ""
-        props['internal_logon'] = 'sysdba' // for Oracle
 
         final url = db.url(host, port)
 
         if (log.debugEnabled)
         {
             log.debug "Accessing database at '$url' with username '$rootUsername' ${showPasswords ? "and password $rootPassword":''}"
+            log.debug "Additional properies are '$properties'"
         }
         return Sql.newInstance(url, props, db.driver)
     }
