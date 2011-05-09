@@ -12,7 +12,8 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     static final DB = [
             'mysql': new MySql(),
             'postgres': new Postgres(),
-            'oracle': new Oracle()
+            'oracle': new Oracle(),
+            'sqlserver': new SqlServer(),
     ]
 
     /**
