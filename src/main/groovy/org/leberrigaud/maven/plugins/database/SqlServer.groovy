@@ -6,7 +6,7 @@ final class SqlServer
 
     final String driver = 'net.sourceforge.jtds.jdbc.Driver'
 
-    final def url(def host = 'localhost', def port = PORT) { "jdbc:jtds:sqlserver://$host:$port/master" }
+    final def url(def host = 'localhost', def port = PORT) { "jdbc:jtds:sqlserver://$host:${port ? port : PORT}/master" }
 
     final def createUser = {username, password -> "CREATE LOGIN $username WITH PASSWORD = '$password'; CREATE USER $username FOR LOGIN $username"}
     final def createDb = {name -> "CREATE DATABASE $name"}
