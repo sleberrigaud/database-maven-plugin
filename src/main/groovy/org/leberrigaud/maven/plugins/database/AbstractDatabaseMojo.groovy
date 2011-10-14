@@ -42,6 +42,12 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     String name
 
     /**
+     * The schema of the database to create
+     * @parameter
+     */
+    String schema
+
+    /**
      * The username of the user to associate to the database
      * @parameter
      */
@@ -84,21 +90,17 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     {
         final def db = db()
         final Sql sql = newSql(db)
-
-        executeSql(sql, db.dropDb(name), true)
-        executeSql(sql, db.dropUser(username), true)
+        executeSql(sql, db.drop(username, password, name, schema), true)
     }
 
     void create()
     {
         final def db = db()
         final Sql sql = newSql(db)
-        executeSql(sql, db.createUser(username, password))
-        executeSql(sql, db.createDb(name))
-        executeSql(sql, db.grantPrivileges(name, username))
+        executeSql(sql, db.create(username, password, name, schema))
     }
 
-    def db()
+    Database db()
     {
         def db = DB[database]
         if (!db)
@@ -125,22 +127,25 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
         return Sql.newInstance(url, props, db.driver)
     }
 
-    private void executeSql(Sql runner, String sql)
+    private void executeSql(Sql runner, List sql)
     {
-        if (sql) executeSql runner, sql, false
+        executeSql runner, sql, false
     }
 
-    private void executeSql(Sql runner, String sql, boolean ignoreException)
+    private void executeSql(Sql runner, List sql, boolean ignoreException)
     {
-        log.info sql
-        try
+        sql.each
         {
-            runner.execute(sql)
-        }
-        catch (Exception e)
-        {
-            if (!ignoreException) throw e
-            else log.info("Error running '$sql': $e.message")
+            log.info it
+            try
+            {
+                runner.execute(it.toString())
+            }
+            catch (Exception e)
+            {
+                if (!ignoreException) throw e
+                else log.info("Error running '$sql': $e.message")
+            }
         }
     }
 
