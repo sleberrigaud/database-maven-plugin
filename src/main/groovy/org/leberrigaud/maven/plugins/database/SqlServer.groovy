@@ -11,22 +11,33 @@ final class SqlServer implements Database
 
     List create(String username, String password, String dbName, String schema)
     {
-        [
+        def sql = []
+        sql.addAll([
                 "CREATE LOGIN $username WITH PASSWORD = '$password'",
-                "CREATE USER $username FOR LOGIN $username",
+                "CREATE USER $username FOR LOGIN $username"
+        ])
+        sql.addAll([
                 "CREATE DATABASE $dbName",
                 "ALTER AUTHORIZATION ON DATABASE::$dbName TO $username",
                 "ALTER USER $username WITH DEFAULT_SCHEMA = ${schema ?: dbName}",
-                "CREATE SCHEMA $schema"
-        ]
+        ])
+        if (schema)
+        {
+            sql.addAll([
+                "USE $dbName",
+                "CREATE SCHEMA $schema",
+            ])
+        }
+
+        sql
     }
 
     List drop(String username, String password, String dbName, String schema)
     {
         [
                 "DROP DATABASE $dbName",
-                "DROP LOGIN $username;DROP USER $username",
-                "DROP SCHEMA $schema"
+                "DROP LOGIN $username",
+                "DROP USER $username"
         ]
     }
 }
