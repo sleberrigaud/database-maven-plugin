@@ -121,7 +121,7 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
 
         if (log.debugEnabled)
         {
-            log.debug "Accessing database at '$url' with username '$rootUsername' ${showPasswords ? "and password $rootPassword":''}"
+            log.debug "Accessing database at '$url' with username '$rootUsername' ${showPasswords ? "and password $rootPassword" : ''}"
             log.debug "Additional properies are '$properties'"
         }
         return Sql.newInstance(url, props, db.driver)

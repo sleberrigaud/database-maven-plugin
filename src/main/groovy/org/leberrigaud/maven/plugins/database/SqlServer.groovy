@@ -6,7 +6,8 @@ final class SqlServer implements Database
 
     final String driver = 'net.sourceforge.jtds.jdbc.Driver'
 
-    final def url(def host = 'localhost', def port = PORT) { "jdbc:jtds:sqlserver://$host:${port ? port : PORT}/master" }
+    final def url(def host = 'localhost', def port = PORT)
+    { "jdbc:jtds:sqlserver://$host:${port ? port : PORT}/master" }
 
     List create(String username, String password, String dbName, String schema)
     {
