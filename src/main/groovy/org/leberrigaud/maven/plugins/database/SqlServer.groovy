@@ -15,7 +15,8 @@ final class SqlServer implements Database
                 "CREATE USER $username FOR LOGIN $username",
                 "CREATE DATABASE $dbName",
                 "ALTER AUTHORIZATION ON DATABASE::$dbName TO $username",
-                "ALTER USER $username WITH DEFAULT_SCHEMA = $dbName"
+                "ALTER USER $username WITH DEFAULT_SCHEMA = ${schema ?: dbName}",
+                "CREATE SCHEMA $schema"
         ]
     }
 
@@ -23,7 +24,8 @@ final class SqlServer implements Database
     {
         [
                 "DROP DATABASE $dbName",
-                "DROP LOGIN $username;DROP USER $username"
+                "DROP LOGIN $username;DROP USER $username",
+                "DROP SCHEMA $schema"
         ]
     }
 }
