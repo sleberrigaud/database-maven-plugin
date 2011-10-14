@@ -8,9 +8,9 @@ final class Oracle
 
     final def url(def host = 'localhost', def port = PORT) { "jdbc:oracle:thin:@$host:${port ? port : PORT}:orcl" }
 
-    final def createUser = {username, password -> "GRANT CONNECT, RESOURCE TO $username IDENTIFIED BY $password"}
-    final def createDb = {name -> ''}
-    final def grantPrivileges = {dbName, user -> ''}
-    final def dropUser = {username -> "DROP USER $username CASCADE" }
-    final def dropDb = {name -> ''};
+    final def createUser = {username, password -> ["GRANT CONNECT, RESOURCE TO $username IDENTIFIED BY $password"]}
+    final def createDb = {name -> []}
+    final def grantPrivileges = {dbName, user, schema -> []}
+    final def dropUser = {username -> ["DROP USER $username CASCADE"] }
+    final def dropDb = {name, schema -> []};
 }

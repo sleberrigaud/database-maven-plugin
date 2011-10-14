@@ -10,9 +10,9 @@ final class MySql
 
     final def url(def host = 'localhost', def port = PORT) { "jdbc:mysql://$host:${port ? port : PORT}/mysql?autoReconnect=true" }
 
-    final def createUser = {username, password -> "create user '$username'@'localhost' identified by '$password'" }
-    final def createDb = {name -> "create database $name" }
-    final def grantPrivileges = {dbName, user -> "grant all on ${dbName}.* to '$user'@'localhost';" }
-    final def dropUser = {username -> "drop user '$username'@'localhost'" }
-    final def dropDb = {name -> "drop database $name" };
+    final def createUser = {username, password -> ["create user '$username'@'localhost' identified by '$password'"] }
+    final def createDb = {name -> ["create database $name"] }
+    final def grantPrivileges = {dbName, user, schema -> ["grant all on ${dbName}.* to '$user'@'localhost';"] }
+    final def dropUser = {username -> ["drop user '$username'@'localhost'"] }
+    final def dropDb = {name, schema -> ["drop database $name"] };
 }

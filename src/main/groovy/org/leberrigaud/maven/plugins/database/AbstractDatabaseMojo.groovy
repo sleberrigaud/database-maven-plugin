@@ -42,6 +42,12 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     String name
 
     /**
+     * The schema of the database to create
+     * @parameter
+     */
+    String schema
+
+    /**
      * The username of the user to associate to the database
      * @parameter
      */
@@ -85,7 +91,7 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
         final def db = db()
         final Sql sql = newSql(db)
 
-        executeSql(sql, db.dropDb(name), true)
+        executeSql(sql, db.dropDb(name, schema), true)
         executeSql(sql, db.dropUser(username), true)
     }
 
@@ -95,7 +101,7 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
         final Sql sql = newSql(db)
         executeSql(sql, db.createUser(username, password))
         executeSql(sql, db.createDb(name))
-        executeSql(sql, db.grantPrivileges(name, username))
+        executeSql(sql, db.grantPrivileges(name, username, schema))
     }
 
     def db()
@@ -119,18 +125,37 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
 
         if (log.debugEnabled)
         {
-            log.debug "Accessing database at '$url' with username '$rootUsername' ${showPasswords ? "and password $rootPassword":''}"
+            log.debug "Accessing database at '$url' with username '$rootUsername' ${showPasswords ? "and password $rootPassword" : ''}"
             log.debug "Additional properies are '$properties'"
         }
         return Sql.newInstance(url, props, db.driver)
     }
 
-    private void executeSql(Sql runner, String sql)
+    private void executeSql(Sql runner, List<String> sqls)
     {
-        if (sql) executeSql runner, sql, false
+        executeSql(runner, sqls, false)
     }
 
-    private void executeSql(Sql runner, String sql, boolean ignoreException)
+    private void executeSql(Sql runner, List<String> sqls, boolean ignoreException)
+    {
+        sqls.each { sql ->
+            if (sql)
+            {
+                log.info sql
+                try
+                {
+                    runner.execute(sql.toString())
+                }
+                catch (Exception e)
+                {
+                    if (!ignoreException) throw e
+                    else log.info("Error running '$sql': $e.message")
+                }
+            }
+        }
+    }
+
+    private void executeSingleSql(Sql runner, String sql, boolean ignoreException)
     {
         log.info sql
         try

@@ -1,15 +1,38 @@
 package org.leberrigaud.maven.plugins.database
 
 final mojo = new CreateMojo()
-mojo.database = 'sqlserver'
 
-// db admin
-mojo.rootUsername = 'sa'
-mojo.rootPassword = 'admin'
+//mySql(mojo)
+sqlServer(mojo)
 
-// host config
-mojo.host = '192.168.0.17'
-mojo.port = '1433'
+private def sqlServer(CreateMojo mojo)
+{
+    // db admin
+    mojo.database = 'sqlserver'
+
+    mojo.rootUsername = 'sa'
+    mojo.rootPassword = '57ia7ouq'
+
+    // host config
+    mojo.host = '192.168.0.106'
+    mojo.port = '1433'
+
+    mojo.schema = 'ao_schema'
+}
+
+private def mySql(CreateMojo mojo)
+{
+    // db admin
+    mojo.database = 'mysql'
+
+    mojo.rootUsername = 'root'
+    mojo.rootPassword = ''
+
+    // host config
+    mojo.host = 'localhost'
+    mojo.port = '3306'
+}
+
 
 // user and database created
 mojo.name = 'ao_test'
