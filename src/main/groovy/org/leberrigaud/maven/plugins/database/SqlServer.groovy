@@ -39,7 +39,7 @@ final class SqlServer implements Database
                 "ALTER AUTHORIZATION ON DATABASE::$config.databaseName TO $config.username",
                 "ALTER USER $config.username WITH DEFAULT_SCHEMA = ${config.databaseSchema ?: config.databaseName}",
         ])
-        if ($config.databaseSchema)
+        if (config.databaseSchema)
         {
             sql.addAll([
                     "USE $config.databaseName",
