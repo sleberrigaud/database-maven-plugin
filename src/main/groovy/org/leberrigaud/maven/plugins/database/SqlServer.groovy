@@ -2,42 +2,60 @@ package org.leberrigaud.maven.plugins.database
 
 final class SqlServer implements Database
 {
-    final static String PORT = '1433'
+    String driverClass()
+    {
+        'net.sourceforge.jtds.jdbc.Driver'
+    }
 
-    final String driver = 'net.sourceforge.jtds.jdbc.Driver'
+    String defaultPort()
+    {
+        '1433'
+    }
 
-    final def url(def host = 'localhost', def port = PORT)
-    { "jdbc:jtds:sqlserver://$host:${port ? port : PORT}/master" }
+    boolean supportsSchema()
+    {
+        true
+    }
 
-    List create(String username, String password, String dbName, String schema)
+    String defaultRootUsername()
+    {
+        'sa'
+    }
+
+    String url(DatabaseConfiguration config)
+    {
+        "jdbc:jtds:sqlserver://$config.host:${config.getPort(defaultPort())}/master"
+    }
+
+    List<String> create(DatabaseConfiguration config)
     {
         def sql = []
         sql.addAll([
-                "CREATE LOGIN $username WITH PASSWORD = '$password'",
-                "CREATE USER $username FOR LOGIN $username"
+                "CREATE LOGIN $config.username WITH PASSWORD = '$config.password'",
+                "CREATE USER $config.username FOR LOGIN $config.username"
         ])
         sql.addAll([
-                "CREATE DATABASE $dbName",
-                "ALTER AUTHORIZATION ON DATABASE::$dbName TO $username",
-                "ALTER USER $username WITH DEFAULT_SCHEMA = ${schema ?: dbName}",
+                "CREATE DATABASE $config.databaseName",
+                "ALTER AUTHORIZATION ON DATABASE::$config.databaseName TO $config.username",
+                "ALTER USER $config.username WITH DEFAULT_SCHEMA = ${config.databaseSchema ?: config.databaseName}",
         ])
         if (schema)
         {
             sql.addAll([
-                "USE $dbName",
-                "CREATE SCHEMA $schema",
+                    "USE $config.databaseName",
+                    "CREATE SCHEMA $config.databaseSchema",
             ])
         }
 
         sql
     }
 
-    List drop(String username, String password, String dbName, String schema)
+    List<String> drop(DatabaseConfiguration config)
     {
         [
-                "DROP DATABASE $dbName",
-                "DROP LOGIN $username",
-                "DROP USER $username"
+                "DROP DATABASE $config.databaseName",
+                "DROP LOGIN $config.username",
+                "DROP USER $config.username"
         ]
     }
 }

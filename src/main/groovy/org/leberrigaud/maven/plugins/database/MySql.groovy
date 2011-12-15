@@ -1,29 +1,46 @@
 package org.leberrigaud.maven.plugins.database
 
-/**
- *
- */
 final class MySql implements Database
 {
-    final static String PORT = '3306'
-    final String driver = "com.mysql.jdbc.Driver"
+    String driverClass()
+    {
+        'com.mysql.jdbc.Driver'
+    }
 
-    final def url(def host = 'localhost', def port = PORT) { "jdbc:mysql://$host:${port ? port : PORT}/mysql?autoReconnect=true" }
+    String defaultPort()
+    {
+        '3306'
+    }
 
-    List create(String username, String password, String dbName, String schema)
+    boolean supportsSchema()
+    {
+        false
+    }
+
+    String defaultRootUsername()
+    {
+        'root'
+    }
+
+    String url(DatabaseConfiguration config)
+    {
+        "jdbc:mysql://$config.host:${config.getPort(defaultPort())}/mysql?autoReconnect=true"
+    }
+
+    List<String> create(DatabaseConfiguration config)
     {
         [
-                "create user '$username'@'localhost' identified by '$password'",
-                "create database $dbName",
-                "grant all on ${dbName}.* to '$username'@'localhost';"
+                "create user '$config.username'@'localhost' identified by '$config.password'",
+                "create database $config.databaseName",
+                "grant all on ${config.databaseName}.* to '$config.username'@'localhost';"
         ]
     }
 
-    List drop(String username, String password, String dbName, String schema)
+    List<String> drop(DatabaseConfiguration config)
     {
         [
-                "drop database $dbName",
-                "drop user '$username'@'localhost'"
+                "drop database $config.databaseName",
+                "drop user '$config.username'@'localhost'"
         ]
     }
 }

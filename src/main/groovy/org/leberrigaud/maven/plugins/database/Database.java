@@ -4,7 +4,17 @@ import java.util.List;
 
 public interface Database
 {
-    List create(String username, String password, String dbName, String schema);
+    String driverClass();
 
-    List drop(String username, String password, String dbName, String schema);
+    String defaultPort();
+
+    boolean supportsSchema();
+
+    String defaultRootUsername();
+
+    String url(DatabaseConfiguration config);
+    
+    List<String> create(DatabaseConfiguration config);
+
+    List<String> drop(DatabaseConfiguration config);
 }

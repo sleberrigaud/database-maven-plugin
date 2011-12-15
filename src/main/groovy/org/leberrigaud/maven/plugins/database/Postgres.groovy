@@ -1,29 +1,46 @@
 package org.leberrigaud.maven.plugins.database
 
-/**
- *
- */
 final class Postgres implements Database
 {
-    final static String PORT = '5432'
-    final String driver = "org.postgresql.Driver"
+    String driverClass()
+    {
+        'org.postgresql.Driver'
+    }
 
-    final def url(def host = 'localhost', def port = PORT) { "jdbc:postgresql://$host:${port ? port : PORT}/postgres" }
+    String defaultPort()
+    {
+        '5432'
+    }
 
-    List create(String username, String password, String dbName, String schema)
+    boolean supportsSchema()
+    {
+        false
+    }
+
+    String defaultRootUsername()
+    {
+        'postgres'
+    }
+
+    String url(DatabaseConfiguration config)
+    {
+        "jdbc:postgresql://$config.host:${config.getPort(defaultPort())}/postgres"
+    }
+
+    List<String> create(DatabaseConfiguration config)
     {
         [
-                "create user $username with password '$password'",
-                "create database $dbName",
-                "grant all privileges on database $dbName to $username"
+                "create user $config.username with password '$config.password'",
+                "create database $config.databaseName",
+                "grant all privileges on database $config.databaseName to $config.username"
         ]
     }
 
-    List drop(String username, String password, String dbName, String schema)
+    List<String> drop(DatabaseConfiguration config)
     {
         [
-                "drop database $dbName",
-                "drop role $username"
+                "drop database $config.databaseName",
+                "drop role $config.username"
         ]
     }
 }

@@ -1,13 +1,15 @@
 package org.leberrigaud.maven.plugins.database
 
 /**
+ * @requiresProject false
  * @goal create
  */
 class CreateMojo extends AbstractDatabaseMojo
 {
     void doExecute()
     {
-        drop()
-        create()
+        final config = validate()
+        drop(config)
+        create(config)
     }
 }
