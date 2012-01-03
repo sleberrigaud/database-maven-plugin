@@ -22,9 +22,14 @@ final class MySql implements Database
         'root'
     }
 
+    String adminDbName()
+    {
+        'mysql'
+    }
+
     String url(DatabaseConfiguration config)
     {
-        "jdbc:mysql://$config.host:${config.getPort(defaultPort())}/mysql?autoReconnect=true"
+        "jdbc:mysql://$config.host:${config.getPort(defaultPort())}/${config.databaseName}?autoReconnect=true"
     }
 
     List<String> create(DatabaseConfiguration config)
@@ -36,6 +41,11 @@ final class MySql implements Database
         ]
     }
 
+    List<String> update(DatabaseConfiguration config)
+    {
+        []
+    }
+    
     List<String> drop(DatabaseConfiguration config)
     {
         [

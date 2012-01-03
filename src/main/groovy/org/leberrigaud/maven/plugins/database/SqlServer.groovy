@@ -22,9 +22,14 @@ final class SqlServer implements Database
         'sa'
     }
 
+    String adminDbName()
+    {
+        'master'
+    }
+
     String url(DatabaseConfiguration config)
     {
-        "jdbc:jtds:sqlserver://$config.host:${config.getPort(defaultPort())}/master"
+        "jdbc:jtds:sqlserver://$config.host:${config.getPort(defaultPort())}/${config.databaseName}"
     }
 
     List<String> create(DatabaseConfiguration config)
@@ -48,6 +53,11 @@ final class SqlServer implements Database
         }
 
         sql
+    }
+
+    List<String> update(DatabaseConfiguration config)
+    {
+        []
     }
 
     List<String> drop(DatabaseConfiguration config)

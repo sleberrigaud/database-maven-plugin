@@ -29,6 +29,11 @@ final class Oracle implements Database
         'sys'
     }
 
+    String adminDbName()
+    {
+        ''
+    }
+
     String url(DatabaseConfiguration config)
     {
         "jdbc:oracle:thin:@$config.host:${config.getPort(defaultPort())}:${config.sid ?: defaultSid()}"
@@ -46,6 +51,11 @@ final class Oracle implements Database
                 "GRANT CONNECT TO $config.username",
         ])
         sql
+    }
+
+    List<String> update(DatabaseConfiguration config)
+    {
+        []
     }
 
     List<String> drop(DatabaseConfiguration config)

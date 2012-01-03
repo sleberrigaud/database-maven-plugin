@@ -12,9 +12,13 @@ public interface Database
 
     String defaultRootUsername();
 
+    String adminDbName();
+    
     String url(DatabaseConfiguration config);
     
     List<String> create(DatabaseConfiguration config);
+
+    List<String> update(DatabaseConfiguration config);
 
     List<String> drop(DatabaseConfiguration config);
 }

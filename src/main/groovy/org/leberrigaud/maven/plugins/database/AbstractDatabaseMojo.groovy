@@ -243,17 +243,24 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     void drop(DatabaseConfiguration config)
     {
         final def db = db()
-        final Sql sql = newSql(db, config)
+        final Sql sql = newSql(db, adminConfig(db, config))
         executeSql(sql, db.drop(config), true)
     }
 
     void create(DatabaseConfiguration config)
     {
         final def db = db()
-        final Sql sql = newSql(db, config)
+        final Sql sql = newSql(db, adminConfig(db, config))
         executeSql(sql, db.create(config))
+        final updateSql = db.update(config)
+        if (updateSql) executeSql(newSql(db, config), updateSql)
     }
 
+    DatabaseConfiguration adminConfig(final Database db, final DatabaseConfiguration config)
+    {
+        new AdminDatabaseConfiguration(db, config)
+    }
+    
     Database db()
     {
         def db = DB[database]
