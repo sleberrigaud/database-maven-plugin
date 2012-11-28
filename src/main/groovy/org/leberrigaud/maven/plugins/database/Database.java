@@ -10,8 +10,6 @@ public interface Database
 
     boolean supportsSchema();
 
-    String defaultRootUsername();
-
     String adminDbName();
     
     String url(DatabaseConfiguration config);

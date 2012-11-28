@@ -35,9 +35,10 @@ final class MySql implements Database
     List<String> create(DatabaseConfiguration config)
     {
         [
-                "create user '$config.username'@'localhost' identified by '$config.password'",
-                "create database $config.databaseName",
-                "grant all on ${config.databaseName}.* to '$config.username'@'localhost';"
+                "create user '$config.username'@'$config.host' identified by '$config.password';",
+                "create database $config.databaseName;",
+                "grant all on ${config.databaseName}.* to '$config.username'@'$config.host' identified by '$config.password';",
+                "flush privileges;"
         ]
     }
 
@@ -50,7 +51,7 @@ final class MySql implements Database
     {
         [
                 "drop database $config.databaseName",
-                "drop user '$config.username'@'localhost'"
+                "drop user '$config.username'@'$config.host'"
         ]
     }
 }

@@ -26,9 +26,21 @@ class AdminDatabaseConfiguration implements DatabaseConfiguration
         return configuration.getUsername();
     }
 
+    @Override
+    public String getRootUsername()
+    {
+        return configuration.getRootUsername();
+    }
+
     public String getPassword()
     {
         return configuration.getPassword();
+    }
+
+    @Override
+    public String getRootPassword()
+    {
+        return configuration.getRootPassword();
     }
 
     public String getDatabaseSchema()
