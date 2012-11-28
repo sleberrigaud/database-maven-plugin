@@ -10,6 +10,10 @@ public interface DatabaseConfiguration
 
     String getPassword();
 
+    String getRootUsername();
+
+    String getRootPassword();
+
     String getDatabaseSchema();
 
     String getDatabaseName();
