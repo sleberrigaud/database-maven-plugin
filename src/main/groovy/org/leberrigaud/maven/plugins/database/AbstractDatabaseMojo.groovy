@@ -60,6 +60,12 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     String password
 
     /**
+     * For Oracle a SID must be defined for the connection
+     * @parameter default-value="orcl"
+     */
+    String sid;
+
+    /**
      * Additional properties one might want to pass when connecting to the database
      * @parameter
      */
@@ -104,9 +110,9 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
         config.username = checkUsername()
         config.password = checkPassword()
         checkSysDba()
-        checkRootUsername()
-        checkRootPassword()
-        
+        config.rootUsername = checkRootUsername()
+        config.rootPassword = checkRootPassword()
+
         config
     }
 
@@ -161,7 +167,6 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
 
     def checkSid()
     {
-        def sid = ''
         if (database == 'oracle' && !isBatch())
         {
             sid = prompt("Please specify the sid of the database to use", db().defaultSid())
@@ -201,21 +206,23 @@ abstract class AbstractDatabaseMojo extends GroovyMojo
     {
         if (!isBatch())
         {
-            rootUsername = prompt("Please specify the root user of the database", db().defaultRootUsername())
+            rootUsername = prompt("Please specify the root user of the database", rootUsername)
         }
         if (!rootUsername)
         {
             log.error "You didn't specify the root user for the database"
             throw new MojoFailureException("You didn't specify the root user for the database")
         }
+        rootUsername
     }
 
     def checkRootPassword()
     {
         if (!isBatch())
         {
-            rootPassword = prompt("Please specify the root password of the database")
+            rootPassword = prompt("Please specify the root password of the database", rootPassword)
         }
+        rootPassword
     }
 
     def checkSysDba()
